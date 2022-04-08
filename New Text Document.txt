@@ -1,0 +1,270 @@
+USE [master]
+GO
+/****** Object:  Database [RestaurantDB]    Script Date: 03-04-2022 23:31:41 ******/
+CREATE DATABASE [RestaurantDB]
+
+
+
+
+ CONTAINMENT = NONE
+ ON  PRIMARY 
+( NAME = N'RestaurantDB', FILENAME = N'C:\Program Files\Microsoft SQL Server\MSSQL15.MSSQLSERVER2019\MSSQL\DATA\RestaurantDB.mdf' , SIZE = 8192KB , MAXSIZE = UNLIMITED, FILEGROWTH = 65536KB )
+ LOG ON 
+( NAME = N'RestaurantDB_log', FILENAME = N'C:\Program Files\Microsoft SQL Server\MSSQL15.MSSQLSERVER2019\MSSQL\DATA\RestaurantDB_log.ldf' , SIZE = 8192KB , MAXSIZE = 2048GB , FILEGROWTH = 65536KB )
+ WITH CATALOG_COLLATION = DATABASE_DEFAULT
+GO
+ALTER DATABASE [RestaurantDB] SET COMPATIBILITY_LEVEL = 150
+GO
+IF (1 = FULLTEXTSERVICEPROPERTY('IsFullTextInstalled'))
+begin
+EXEC [RestaurantDB].[dbo].[sp_fulltext_database] @action = 'enable'
+end
+GO
+ALTER DATABASE [RestaurantDB] SET ANSI_NULL_DEFAULT OFF 
+GO
+ALTER DATABASE [RestaurantDB] SET ANSI_NULLS OFF 
+GO
+ALTER DATABASE [RestaurantDB] SET ANSI_PADDING OFF 
+GO
+ALTER DATABASE [RestaurantDB] SET ANSI_WARNINGS OFF 
+GO
+ALTER DATABASE [RestaurantDB] SET ARITHABORT OFF 
+GO
+ALTER DATABASE [RestaurantDB] SET AUTO_CLOSE OFF 
+GO
+ALTER DATABASE [RestaurantDB] SET AUTO_SHRINK OFF 
+GO
+ALTER DATABASE [RestaurantDB] SET AUTO_UPDATE_STATISTICS ON 
+GO
+ALTER DATABASE [RestaurantDB] SET CURSOR_CLOSE_ON_COMMIT OFF 
+GO
+ALTER DATABASE [RestaurantDB] SET CURSOR_DEFAULT  GLOBAL 
+GO
+ALTER DATABASE [RestaurantDB] SET CONCAT_NULL_YIELDS_NULL OFF 
+GO
+ALTER DATABASE [RestaurantDB] SET NUMERIC_ROUNDABORT OFF 
+GO
+ALTER DATABASE [RestaurantDB] SET QUOTED_IDENTIFIER OFF 
+GO
+ALTER DATABASE [RestaurantDB] SET RECURSIVE_TRIGGERS OFF 
+GO
+ALTER DATABASE [RestaurantDB] SET  ENABLE_BROKER 
+GO
+ALTER DATABASE [RestaurantDB] SET AUTO_UPDATE_STATISTICS_ASYNC OFF 
+GO
+ALTER DATABASE [RestaurantDB] SET DATE_CORRELATION_OPTIMIZATION OFF 
+GO
+ALTER DATABASE [RestaurantDB] SET TRUSTWORTHY OFF 
+GO
+ALTER DATABASE [RestaurantDB] SET ALLOW_SNAPSHOT_ISOLATION OFF 
+GO
+ALTER DATABASE [RestaurantDB] SET PARAMETERIZATION SIMPLE 
+GO
+ALTER DATABASE [RestaurantDB] SET READ_COMMITTED_SNAPSHOT OFF 
+GO
+ALTER DATABASE [RestaurantDB] SET HONOR_BROKER_PRIORITY OFF 
+GO
+ALTER DATABASE [RestaurantDB] SET RECOVERY FULL 
+GO
+ALTER DATABASE [RestaurantDB] SET  MULTI_USER 
+GO
+ALTER DATABASE [RestaurantDB] SET PAGE_VERIFY CHECKSUM  
+GO
+ALTER DATABASE [RestaurantDB] SET DB_CHAINING OFF 
+GO
+ALTER DATABASE [RestaurantDB] SET FILESTREAM( NON_TRANSACTED_ACCESS = OFF ) 
+GO
+ALTER DATABASE [RestaurantDB] SET TARGET_RECOVERY_TIME = 60 SECONDS 
+GO
+ALTER DATABASE [RestaurantDB] SET DELAYED_DURABILITY = DISABLED 
+GO
+ALTER DATABASE [RestaurantDB] SET ACCELERATED_DATABASE_RECOVERY = OFF  
+GO
+EXEC sys.sp_db_vardecimal_storage_format N'RestaurantDB', N'ON'
+GO
+ALTER DATABASE [RestaurantDB] SET QUERY_STORE = OFF
+GO
+
+
+
+
+USE [RestaurantDB]
+GO
+/****** Object:  Schema [Master]    Script Date: 03-04-2022 23:31:41 ******/
+CREATE SCHEMA [Master]
+GO
+/****** Object:  Schema [Order]    Script Date: 03-04-2022 23:31:41 ******/
+CREATE SCHEMA [Order]
+GO
+/****** Object:  Table [Master].[Customers]    Script Date: 03-04-2022 23:31:41 ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [Master].[Customers](
+	[CustomerId] [int] IDENTITY(1,1) NOT NULL,
+	[CustomerName] [varchar](100) NOT NULL,
+ CONSTRAINT [PK_Customers] PRIMARY KEY CLUSTERED 
+(
+	[CustomerId] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+/****** Object:  Table [Master].[Items]    Script Date: 03-04-2022 23:31:41 ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [Master].[Items](
+	[ItemId] [int] IDENTITY(1,1) NOT NULL,
+	[ItemName] [varchar](50) NOT NULL,
+	[ItemPrice] [decimal](18, 2) NOT NULL,
+ CONSTRAINT [PK_Items] PRIMARY KEY CLUSTERED 
+(
+	[ItemId] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+/****** Object:  Table [Master].[PaymentTypes]    Script Date: 03-04-2022 23:31:41 ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [Master].[PaymentTypes](
+	[PaymentTypeId] [int] IDENTITY(1,1) NOT NULL,
+	[PaymentTypeName] [varchar](50) NOT NULL,
+ CONSTRAINT [PK_PaymentTypes] PRIMARY KEY CLUSTERED 
+(
+	[PaymentTypeId] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+/****** Object:  Table [Order].[OrderDetails]    Script Date: 03-04-2022 23:31:41 ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [Order].[OrderDetails](
+	[OrderDetailId] [int] IDENTITY(1,1) NOT NULL,
+	[OrderId] [int] NOT NULL,
+	[ItemId] [int] NOT NULL,
+	[UnitPrice] [decimal](18, 2) NOT NULL,
+	[Discount] [decimal](18, 2) NOT NULL,
+	[Total] [decimal](18, 2) NOT NULL,
+	[Quantity] [decimal](18, 2) NULL,
+ CONSTRAINT [PK_OrderDetails] PRIMARY KEY CLUSTERED 
+(
+	[OrderDetailId] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+/****** Object:  Table [Order].[Orders]    Script Date: 03-04-2022 23:31:41 ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [Order].[Orders](
+	[OrderId] [int] IDENTITY(1,1) NOT NULL,
+	[PaymentTypeId] [int] NOT NULL,
+	[CustomerId] [int] NOT NULL,
+	[OrderNumber] [varchar](250) NOT NULL,
+	[OrderDate] [datetime] NOT NULL,
+	[FinalTotal] [decimal](18, 2) NOT NULL,
+ CONSTRAINT [PK_Orders] PRIMARY KEY CLUSTERED 
+(
+	[OrderId] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+/****** Object:  Table [Order].[Transactions]    Script Date: 03-04-2022 23:31:41 ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [Order].[Transactions](
+	[TransactionId] [int] IDENTITY(1,1) NOT NULL,
+	[ItemId] [int] NOT NULL,
+	[Quantity] [decimal](18, 2) NOT NULL,
+	[TransactionDate] [datetime] NOT NULL,
+	[TypeId] [int] NULL,
+ CONSTRAINT [PK_Transactions] PRIMARY KEY CLUSTERED 
+(
+	[TransactionId] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+SET IDENTITY_INSERT [Master].[Customers] ON 
+GO
+INSERT [Master].[Customers] ([CustomerId], [CustomerName]) VALUES (1, N'Customer A')
+GO
+INSERT [Master].[Customers] ([CustomerId], [CustomerName]) VALUES (2, N'Customer B')
+GO
+INSERT [Master].[Customers] ([CustomerId], [CustomerName]) VALUES (3, N'Customer C')
+GO
+INSERT [Master].[Customers] ([CustomerId], [CustomerName]) VALUES (4, N'Customer D')
+GO
+INSERT [Master].[Customers] ([CustomerId], [CustomerName]) VALUES (5, N'Customer E')
+GO
+SET IDENTITY_INSERT [Master].[Customers] OFF
+GO
+SET IDENTITY_INSERT [Master].[Items] ON 
+GO
+INSERT [Master].[Items] ([ItemId], [ItemName], [ItemPrice]) VALUES (1, N'Apple', CAST(50.00 AS Decimal(18, 2)))
+GO
+INSERT [Master].[Items] ([ItemId], [ItemName], [ItemPrice]) VALUES (2, N'Orange', CAST(70.00 AS Decimal(18, 2)))
+GO
+INSERT [Master].[Items] ([ItemId], [ItemName], [ItemPrice]) VALUES (3, N'Pizza', CAST(450.00 AS Decimal(18, 2)))
+GO
+INSERT [Master].[Items] ([ItemId], [ItemName], [ItemPrice]) VALUES (4, N'Burger', CAST(150.00 AS Decimal(18, 2)))
+GO
+INSERT [Master].[Items] ([ItemId], [ItemName], [ItemPrice]) VALUES (5, N'Noodles', CAST(80.00 AS Decimal(18, 2)))
+GO
+INSERT [Master].[Items] ([ItemId], [ItemName], [ItemPrice]) VALUES (6, N'Rice', CAST(50.00 AS Decimal(18, 2)))
+GO
+INSERT [Master].[Items] ([ItemId], [ItemName], [ItemPrice]) VALUES (7, N'French Fries', CAST(60.00 AS Decimal(18, 2)))
+GO
+SET IDENTITY_INSERT [Master].[Items] OFF
+GO
+SET IDENTITY_INSERT [Master].[PaymentTypes] ON 
+GO
+INSERT [Master].[PaymentTypes] ([PaymentTypeId], [PaymentTypeName]) VALUES (1, N'Cash')
+GO
+INSERT [Master].[PaymentTypes] ([PaymentTypeId], [PaymentTypeName]) VALUES (2, N'Credit')
+GO
+SET IDENTITY_INSERT [Master].[PaymentTypes] OFF
+GO
+SET IDENTITY_INSERT [Order].[OrderDetails] ON 
+GO
+INSERT [Order].[OrderDetails] ([OrderDetailId], [OrderId], [ItemId], [UnitPrice], [Discount], [Total], [Quantity]) VALUES (1, 1, 6, CAST(50.00 AS Decimal(18, 2)), CAST(0.00 AS Decimal(18, 2)), CAST(50.00 AS Decimal(18, 2)), CAST(1.00 AS Decimal(18, 2)))
+GO
+SET IDENTITY_INSERT [Order].[OrderDetails] OFF
+GO
+SET IDENTITY_INSERT [Order].[Orders] ON 
+GO
+INSERT [Order].[Orders] ([OrderId], [PaymentTypeId], [CustomerId], [OrderNumber], [OrderDate], [FinalTotal]) VALUES (1, 1, 1, N'03232022112346', CAST(N'2022-04-03T23:23:46.933' AS DateTime), CAST(50.00 AS Decimal(18, 2)))
+GO
+SET IDENTITY_INSERT [Order].[Orders] OFF
+GO
+SET IDENTITY_INSERT [Order].[Transactions] ON 
+GO
+INSERT [Order].[Transactions] ([TransactionId], [ItemId], [Quantity], [TransactionDate], [TypeId]) VALUES (1, 1, CAST(100.00 AS Decimal(18, 2)), CAST(N'2022-04-01T00:00:00.000' AS DateTime), 1)
+GO
+INSERT [Order].[Transactions] ([TransactionId], [ItemId], [Quantity], [TransactionDate], [TypeId]) VALUES (3, 2, CAST(50.00 AS Decimal(18, 2)), CAST(N'2022-04-01T00:00:00.000' AS DateTime), 1)
+GO
+INSERT [Order].[Transactions] ([TransactionId], [ItemId], [Quantity], [TransactionDate], [TypeId]) VALUES (4, 3, CAST(100.00 AS Decimal(18, 2)), CAST(N'2022-04-01T00:00:00.000' AS DateTime), 1)
+GO
+INSERT [Order].[Transactions] ([TransactionId], [ItemId], [Quantity], [TransactionDate], [TypeId]) VALUES (5, 2, CAST(-50.00 AS Decimal(18, 2)), CAST(N'2022-04-01T00:00:00.000' AS DateTime), 2)
+GO
+INSERT [Order].[Transactions] ([TransactionId], [ItemId], [Quantity], [TransactionDate], [TypeId]) VALUES (6, 6, CAST(-1.00 AS Decimal(18, 2)), CAST(N'2022-04-03T23:23:46.997' AS DateTime), 2)
+GO
+SET IDENTITY_INSERT [Order].[Transactions] OFF
+GO
+ALTER TABLE [Order].[OrderDetails]  WITH CHECK ADD  CONSTRAINT [FK_OrderDetails_Orders] FOREIGN KEY([OrderId])
+REFERENCES [Order].[Orders] ([OrderId])
+GO
+ALTER TABLE [Order].[OrderDetails] CHECK CONSTRAINT [FK_OrderDetails_Orders]
+GO
+USE [master]
+GO
+ALTER DATABASE [RestaurantDB] SET  READ_WRITE 
+GO
